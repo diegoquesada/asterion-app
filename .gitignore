@@ -3,7 +3,9 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-.env
+
+# Environment files (contain secrets - never commit these)
+*.env
 
 # Node.js
 node_modules/
@@ -16,3 +18,11 @@ dist/
 .vscode/
 .idea/
 *.swp
+
+# Claude
+.claude/
+memory/
+*.session
+
+# Docker
+docker-compose.override.yml
