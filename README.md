@@ -1,8 +1,5 @@
-# AsterionApp
-This project is an app to track individual investments across multiple accounts.
-
-## General conventions and standards
-Prefer separate files for separate abstractions. Generate generous comments in the code but don't be excessively verbose. Assume basic familiarity with Python and Docker, but only basic knowledge of React.
+# asterion-app 
+This project is a web app to track individual investments across multiple accounts. Backend is Python + Flask, front end is React + Vite.js, and database is Mongodb.
 
 ## Data model
 The app understands the concepts of Accounts, Investments, Transactions and Snapshots.
@@ -59,9 +56,4 @@ Transactions support:
 - Ading a purchase transaction, also adds the unit number to the investment balance, and updates the average cost
 - Adding a sale transaction, also subtracts the unit number from the investment balancet
 
-### Web app
-A React web app is used to enter and visualize the data. The app has the following modules:
-- An overview mode displays overall asset allocation.
-- An account list, listing all the existing accounts with a total of their investment value.
-- The account view displays all the investments within a given account, as a table.
 
