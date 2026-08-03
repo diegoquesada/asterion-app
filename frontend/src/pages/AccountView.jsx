@@ -105,13 +105,14 @@ function AccountView() {
   }
 
   // Calculate chart data
-  const assetClassTotals = {}
+  // The API calls asset_class what is actually investment vehicles - will be fixed later.
+  const investmentVehicleTotals = {}
   investments.forEach(inv => {
     const value = inv.unit_balance * inv.avg_cost
-    assetClassTotals[inv.asset_class] = (assetClassTotals[inv.asset_class] || 0) + value
+    investmentVehicleTotals[inv.asset_class] = (investmentVehicleTotals[inv.asset_class] || 0) + value
   })
 
-  const chartData = Object.entries(assetClassTotals).map(([name, value]) => ({
+  const chartData = Object.entries(investmentVehicleTotals).map(([name, value]) => ({
     name,
     value: parseFloat(value.toFixed(2))
   }))
@@ -229,10 +230,10 @@ function AccountView() {
           )}
         </div>
 
-        {/* Asset Allocation Chart */}
+        {/* Investment vehicles chart */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Asset Allocation</h2>
+            <h2 className="card-title">Investment Vehicles</h2>
           </div>
 
           {chartData.length === 0 ? (

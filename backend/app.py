@@ -381,6 +381,49 @@ def transfer_investment(investment_id):
     return jsonify(serialize_doc(investment))
 
 
+@app.route('/api/investments/<investment_id>', methods=['PATCH'])
+def update_investment(investment_id):
+    """
+    Update an investment's fields.
+
+    Args:
+        investment_id: The investment's ObjectId
+
+    Request body (any combination of):
+        - symbol: string
+        - asset_class: string ("Stock", "Mutual fund", "ETF", "Bond", or "GIC")
+        - unit_balance: float
+        - avg_cost: float
+
+    Returns:
+        JSON the updated investment
+    """
+    db = get_db()
+    data = request.json
+
+    # Build update fields
+    update_fields = {}
+    allowed_fields = ['symbol', 'asset_class', 'unit_balance', 'avg_cost']
+
+    for field in allowed_fields:
+        if field in data:
+            update_fields[field] = data[field]
+
+    if not update_fields:
+        return jsonify({'error': 'No valid fields to update'}), 400
+
+    result = db.investments.update_one(
+        {'_id': ObjectId(investment_id)},
+        {'$set': update_fields}
+    )
+
+    if result.matched_count == 0:
+        return jsonify({'error': 'Investment not found'}), 404
+
+    updated_investment = db.investments.find_one({'_id': ObjectId(investment_id)})
+    return jsonify(serialize_doc(updated_investment))
+
+
 # ============================================================================
 # TRANSACTIONS API
 # ============================================================================

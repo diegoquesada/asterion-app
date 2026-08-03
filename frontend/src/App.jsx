@@ -14,6 +14,7 @@ import Overview from './pages/Overview'
 import AccountList from './pages/AccountList'
 import AccountView from './pages/AccountView'
 import InvestmentView from './pages/InvestmentView'
+import Footer from './components/Footer'
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </BrowserRouter>
   )

@@ -16,6 +16,7 @@ function InvestmentView() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   // Form state for new transaction
   const [newTransaction, setNewTransaction] = useState({
@@ -23,6 +24,14 @@ function InvestmentView() {
     type: 'Purchase',
     units: 0,
     unit_price: 0
+  })
+
+  // Form state for editing investment
+  const [editInvestment, setEditInvestment] = useState({
+    symbol: '',
+    asset_class: 'Stock',
+    unit_balance: 0,
+    avg_cost: 0
   })
 
   // Fetch investment and transactions on mount
@@ -85,6 +94,34 @@ function InvestmentView() {
     }
   }
 
+  async function handleUpdateInvestment(e) {
+    e.preventDefault()
+    try {
+      const response = await fetch(`/api/investments/${investmentId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editInvestment)
+      })
+      if (!response.ok) {
+        throw new Error('Failed to update investment')
+      }
+      setShowEditModal(false)
+      fetchData()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  function openEditModal() {
+    setEditInvestment({
+      symbol: investment.symbol,
+      asset_class: investment.asset_class,
+      unit_balance: investment.unit_balance,
+      avg_cost: investment.avg_cost
+    })
+    setShowEditModal(true)
+  }
+
   // Sort transactions by date (newest first)
   const sortedTransactions = [...transactions].sort((a, b) => {
     return new Date(b.date) - new Date(a.date)
@@ -133,9 +170,14 @@ function InvestmentView() {
             </span>
           </div>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-          + Add Transaction
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button className="btn btn-secondary" onClick={openEditModal}>
+            Edit Investment
+          </button>
+          <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
+            + Add Transaction
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -151,15 +193,15 @@ function InvestmentView() {
         </div>
         <div className="grid-3">
           <div>
-            <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Units</div>
+            <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Quantity</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 600 }}>{investment.unit_balance?.toFixed(4) || '0.0000'}</div>
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Average Cost</div>
+            <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Average cost</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 600 }}>${investment.avg_cost?.toFixed(2) || '0.00'}</div>
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Total Value</div>
+            <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Book value</div>
             <div style={{ fontSize: '1.5rem', fontWeight: 600, color: '#10b981' }}>${currentValue.toFixed(2)}</div>
           </div>
         </div>
@@ -303,6 +345,82 @@ function InvestmentView() {
                 </button>
                 <button type="submit" className="btn btn-primary">
                   Add Transaction
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Investment Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Edit Investment</h2>
+              <button className="modal-close" onClick={() => setShowEditModal(false)}>&times;</button>
+            </div>
+
+            <form onSubmit={handleUpdateInvestment}>
+              <div className="form-group">
+                <label className="form-label">Symbol</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editInvestment.symbol}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, symbol: e.target.value.toUpperCase() })}
+                  maxLength={10}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Asset Class</label>
+                <select
+                  className="form-select"
+                  value={editInvestment.asset_class}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, asset_class: e.target.value })}
+                >
+                  <option value="Stock">Stock</option>
+                  <option value="Mutual fund">Mutual fund</option>
+                  <option value="ETF">ETF</option>
+                  <option value="Bond">Bond</option>
+                  <option value="GIC">GIC</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Unit Balance</label>
+                <input
+                  type="number"
+                  step="0.0001"
+                  className="form-input"
+                  value={editInvestment.unit_balance}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, unit_balance: parseFloat(e.target.value) || 0 })}
+                  min="0"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Average Cost per Unit</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-input"
+                  value={editInvestment.avg_cost}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, avg_cost: parseFloat(e.target.value) || 0 })}
+                  min="0"
+                  required
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowEditModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Save Changes
                 </button>
               </div>
             </form>

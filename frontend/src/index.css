@@ -519,6 +519,32 @@ tr:hover {
   color: var(--success-color);
 }
 
+/* Footer */
+.app-footer {
+  padding: 1.5rem 2rem;
+  background-color: var(--card-background);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.version-tag {
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--background-color);
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .overview-container {
