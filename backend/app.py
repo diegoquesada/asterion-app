@@ -89,8 +89,8 @@ def list_accounts():
         account_data = serialize_doc(account)
         # Sum up investment values
         investments = list(db.investments.find({'account_id': str(account['_id'])}))
-        total_value = sum(inv.get('unit_balance', 0) * inv.get('avg_cost', 0) for inv in investments)
-        account_data['total_value'] = total_value
+        book_value = sum(inv.get('unit_balance', 0) * inv.get('avg_cost', 0) for inv in investments)
+        account_data['total_book_value'] = book_value
         result.append(account_data)
 
     return jsonify(result)
@@ -580,16 +580,16 @@ def get_overview():
 
         account_total = 0
         for inv in investments:
-            value = inv.get('unit_balance', 0) * inv.get('avg_cost', 0)
-            account_total += value
+            book_value = inv.get('unit_balance', 0) * inv.get('avg_cost', 0)
+            account_total += book_value
 
             # Accumulate by asset class
             asset_class = inv.get('asset_class', 'Unknown')
             if asset_class not in asset_class_totals:
                 asset_class_totals[asset_class] = 0
-            asset_class_totals[asset_class] += value
+            asset_class_totals[asset_class] += book_value
 
-        account_data['total_value'] = account_total
+        account_data['total_book_value'] = account_total
         accounts_data.append(account_data)
 
     return jsonify({

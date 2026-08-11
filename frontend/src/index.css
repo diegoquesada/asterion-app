@@ -286,6 +286,11 @@ tr:hover {
   color: var(--success-color);
 }
 
+.account-book-value {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
 .account-badges {
   display: flex;
   gap: 0.5rem;
