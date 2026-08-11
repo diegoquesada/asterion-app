@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { formatNumber } from '../utils/formatters'
 
 function AccountList() {
   const [accounts, setAccounts] = useState([])
@@ -129,8 +130,11 @@ function AccountList() {
                   </span>
                 </div>
               </div>
+              <div className="account-book-value">
+                ${formatNumber(account.total_book_value)}
+              </div>
               <div className="account-value">
-                ${account.total_value?.toFixed(2) || '0.00'}
+                {/* Value */}
               </div>
               <button
                 className="btn btn-danger"

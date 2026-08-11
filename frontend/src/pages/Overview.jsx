@@ -10,6 +10,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { formatNumber } from '../utils/formatters'
 
 // Color palette for asset classes
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16']
@@ -49,7 +50,8 @@ function Overview() {
   }))
 
   // Calculate total value across all accounts
-  const totalValue = Object.values(assetAllocation).reduce((sum, val) => sum + val, 0)
+  const totalValue = 0
+  const totalBookValue = accounts.reduce((sum, acc) => sum + (acc.total_book_value || 0), 0)
 
   if (loading) {
     return <div className="loading">Loading overview...</div>
@@ -87,7 +89,8 @@ function Overview() {
                     <th>Institution</th>
                     <th>Type</th>
                     <th>Tax Status</th>
-                    <th>Value</th>
+                    <th>Book Value</th>
+                    <th>Market Value</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -110,15 +113,17 @@ function Overview() {
                         </span>
                       </td>
                       <td style={{ fontWeight: 600, color: '#10b981' }}>
-                        ${account.total_value?.toFixed(2) || '0.00'}
+                        ${formatNumber(account.total_book_value)}
                       </td>
+                      <td></td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
                   <tr style={{ backgroundColor: '#f8fafc', fontWeight: 600 }}>
                     <td colSpan={4}>Total</td>
-                    <td style={{ color: '#10b981' }}>${totalValue.toFixed(2)}</td>
+                    <td style={{ color: '#10b981' }}>${formatNumber(totalBookValue)}</td>
+                    <td style={{ color: '#10b981' }}></td>
                   </tr>
                 </tfoot>
               </table>
@@ -154,7 +159,7 @@ function Overview() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                  <Tooltip formatter={(value) => `$${formatNumber(value)}`} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>

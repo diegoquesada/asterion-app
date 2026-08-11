@@ -9,6 +9,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { formatNumber } from '../utils/formatters'
 
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16']
 
@@ -185,7 +186,8 @@ function AccountView() {
                     <th>Asset Class</th>
                     <th>Units</th>
                     <th>Avg Cost</th>
-                    <th>Value</th>
+                    <th>Book Value</th>
+                    <th>Market Value</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -202,10 +204,11 @@ function AccountView() {
                       </td>
                       <td>{inv.asset_class}</td>
                       <td>{inv.unit_balance?.toFixed(4) || '0.0000'}</td>
-                      <td>${inv.avg_cost?.toFixed(2) || '0.00'}</td>
+                      <td>${formatNumber(inv.avg_cost)}</td>
                       <td style={{ fontWeight: 600, color: '#10b981' }}>
-                        ${(inv.unit_balance * inv.avg_cost).toFixed(2)}
+                        ${formatNumber(inv.unit_balance * inv.avg_cost)}
                       </td>
+                      <td></td>
                       <td>
                         <button
                           className="btn btn-danger"
@@ -221,7 +224,8 @@ function AccountView() {
                 <tfoot>
                   <tr style={{ backgroundColor: '#f8fafc', fontWeight: 600 }}>
                     <td colSpan={4}>Total</td>
-                    <td style={{ color: '#10b981' }}>${totalValue.toFixed(2)}</td>
+                    <td style={{ color: '#10b981' }}>${formatNumber(totalValue)}</td>
+                    <td></td>
                     <td></td>
                   </tr>
                 </tfoot>

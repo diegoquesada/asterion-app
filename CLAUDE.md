@@ -16,5 +16,6 @@ Prefer separate files for separate abstractions. Generate generous comments in t
 ## Common commands
 ```bash
 backend/start_debug_backend.sh # Start the backend in a development server
+backend/run_tests.sh # Execute backend test suite
 ```
 

@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { formatNumber } from '../utils/formatters'
 
 function InvestmentView() {
   const { accountId, investmentId } = useParams()
@@ -198,11 +199,11 @@ function InvestmentView() {
           </div>
           <div>
             <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Average cost</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 600 }}>${investment.avg_cost?.toFixed(2) || '0.00'}</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 600 }}>${formatNumber(investment.avg_cost)}</div>
           </div>
           <div>
             <div style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Book value</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 600, color: '#10b981' }}>${currentValue.toFixed(2)}</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 600, color: '#10b981' }}>${formatNumber(currentValue)}</div>
           </div>
         </div>
       </div>
@@ -243,9 +244,9 @@ function InvestmentView() {
                         </span>
                       </td>
                       <td>{trans.units?.toFixed(4) || '0.0000'}</td>
-                      <td>${trans.unit_price?.toFixed(2) || '0.00'}</td>
+                      <td>${formatNumber(trans.unit_price)}</td>
                       <td style={{ fontWeight: 600, color: trans.type === 'Purchase' ? '#10b981' : '#ef4444' }}>
-                        {trans.type === 'Purchase' ? '+' : '-'}${trans.transaction_cost?.toFixed(2) || '0.00'}
+                        {trans.type === 'Purchase' ? '+' : '-'}${formatNumber(trans.transaction_cost)}
                       </td>
                     </tr>
                   ))}
@@ -256,16 +257,16 @@ function InvestmentView() {
             <div className="total-row">
               <div>
                 <span style={{ color: '#64748b' }}>Total Purchases: </span>
-                <span style={{ color: '#10b981' }}>${totalPurchases.toFixed(2)}</span>
+                <span style={{ color: '#10b981' }}>${formatNumber(totalPurchases)}</span>
               </div>
               <div>
                 <span style={{ color: '#64748b' }}>Total Sales: </span>
-                <span style={{ color: '#ef4444' }}>${totalSales.toFixed(2)}</span>
+                <span style={{ color: '#ef4444' }}>${formatNumber(totalSales)}</span>
               </div>
               <div>
                 <span style={{ color: '#64748b' }}>Net: </span>
                 <span style={{ color: totalSales > totalPurchases ? '#ef4444' : '#10b981' }}>
-                  ${(totalPurchases - totalSales).toFixed(2)}
+                  ${formatNumber(totalPurchases - totalSales)}
                 </span>
               </div>
             </div>
@@ -335,7 +336,7 @@ function InvestmentView() {
               <div className="form-group" style={{ padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '6px' }}>
                 <div style={{ color: '#64748b', fontSize: '0.875rem' }}>Transaction Cost</div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>
-                  ${(newTransaction.units * newTransaction.unit_price).toFixed(2)}
+                  ${formatNumber(newTransaction.units * newTransaction.unit_price)}
                 </div>
               </div>
 
