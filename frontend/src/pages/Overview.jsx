@@ -65,9 +65,9 @@ function Overview() {
     <div className="overview-page">
       <h1 className="page-title">Overview</h1>
 
-      <div className="overview-container">
+      <div className="layout-allocation">
         {/* Accounts Table */}
-        <div className="card">
+        <div className="card layout-allocation-main">
           <div className="card-header">
             <h2 className="card-title">Accounts</h2>
             <Link to="/accounts" className="btn btn-secondary">View All</Link>
@@ -132,7 +132,7 @@ function Overview() {
         </div>
 
         {/* Asset Allocation Chart */}
-        <div className="card">
+        <div className="card layout-allocation-chart">
           <div className="card-header">
             <h2 className="card-title">Asset Allocation</h2>
           </div>

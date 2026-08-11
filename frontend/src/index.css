@@ -570,3 +570,19 @@ tr:hover {
     gap: 0.5rem;
   }
 }
+
+/* Allocation Layout */
+.layout-allocation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.layout-allocation-main {
+  flex: 1 1 600px;
+}
+
+.layout-allocation-chart {
+  flex: 1 1 400px;
+  max-width: 400px;
+}
