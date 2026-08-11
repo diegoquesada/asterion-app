@@ -163,9 +163,9 @@ function AccountView() {
         </div>
       )}
 
-      <div className="grid-2">
+      <div className="layout-allocation">
         {/* Investments Table */}
-        <div className="card">
+        <div className="card layout-allocation-main">
           <div className="card-header">
             <h2 className="card-title">Investments</h2>
           </div>
@@ -235,7 +235,7 @@ function AccountView() {
         </div>
 
         {/* Investment vehicles chart */}
-        <div className="card">
+        <div className="card layout-allocation-chart">
           <div className="card-header">
             <h2 className="card-title">Investment Vehicles</h2>
           </div>
