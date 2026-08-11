@@ -30,7 +30,7 @@ function InvestmentView() {
   // Form state for editing investment
   const [editInvestment, setEditInvestment] = useState({
     symbol: '',
-    asset_class: 'Stock',
+    investment_vehicle: 'Stock',
     unit_balance: 0,
     avg_cost: 0
   })
@@ -116,7 +116,7 @@ function InvestmentView() {
   function openEditModal() {
     setEditInvestment({
       symbol: investment.symbol,
-      asset_class: investment.asset_class,
+      asset_vehicle: investment.investment_vehicle,
       unit_balance: investment.unit_balance,
       avg_cost: investment.avg_cost
     })
@@ -167,7 +167,7 @@ function InvestmentView() {
           </h1>
           <div className="account-badges">
             <span className="badge" style={{ backgroundColor: '#e0e7ff', color: '#3730a3' }}>
-              {investment.asset_class}
+              {investment.investment_vehicle}
             </span>
           </div>
         </div>
@@ -376,11 +376,11 @@ function InvestmentView() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Asset Class</label>
+                <label className="form-label">Investment Vehicle</label>
                 <select
                   className="form-select"
-                  value={editInvestment.asset_class}
-                  onChange={(e) => setEditInvestment({ ...editInvestment, asset_class: e.target.value })}
+                  value={editInvestment.investment_vehicle}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, investment_vehicle: e.target.value })}
                 >
                   <option value="Stock">Stock</option>
                   <option value="Mutual fund">Mutual fund</option>

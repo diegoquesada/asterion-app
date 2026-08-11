@@ -257,7 +257,7 @@ def produce_snapshot(account_id):
 
         snapshot_investments.append({
             'symbol': symbol,
-            'asset_class': inv.get('asset_class'),
+            'investment_vehicle': inv.get('investment_vehicle'),
             'units': units,
             'unit_value': unit_value,
             'total_value': total_value
@@ -290,7 +290,7 @@ def add_investment(account_id):
 
     Request body:
         - symbol: string (up to 10 chars)
-        - asset_class: "Stock", "Mutual fund", "ETF", "Bond", or "GIC"
+        - investment_vehicle: "Stock", "Mutual fund", "ETF", "Bond", or "GIC"
         - unit_balance: float (default 0)
         - avg_cost: float (default 0)
 
@@ -308,7 +308,7 @@ def add_investment(account_id):
     investment = {
         'account_id': account_id,
         'symbol': data['symbol'],
-        'asset_class': data['asset_class'],
+        'investment_vehicle': data['investment_vehicle'],
         'unit_balance': data.get('unit_balance', 0),
         'avg_cost': data.get('avg_cost', 0),
         'created_at': datetime.utcnow()
@@ -391,7 +391,7 @@ def update_investment(investment_id):
 
     Request body (any combination of):
         - symbol: string
-        - asset_class: string ("Stock", "Mutual fund", "ETF", "Bond", or "GIC")
+        - investment_vehicle: string ("Stock", "Mutual fund", "ETF", "Bond", or "GIC")
         - unit_balance: float
         - avg_cost: float
 
@@ -403,7 +403,7 @@ def update_investment(investment_id):
 
     # Build update fields
     update_fields = {}
-    allowed_fields = ['symbol', 'asset_class', 'unit_balance', 'avg_cost']
+    allowed_fields = ['symbol', 'investment_vehicle', 'unit_balance', 'avg_cost']
 
     for field in allowed_fields:
         if field in data:
@@ -557,10 +557,10 @@ def list_snapshots(account_id):
 def get_overview():
     """
     Get overview data for asset allocation.
-    Combines all accounts and sums investments by asset class.
+    Combines all accounts and sums investments by investment vehicle.
 
     Returns:
-        JSON with account list and asset allocation by asset class
+        JSON with account list and asset allocation by investment vehicle
     """
     db = get_db()
 
@@ -568,8 +568,8 @@ def get_overview():
     accounts = list(db.accounts.find({'active': True}))
     accounts_data = []
 
-    # Calculate totals by asset class
-    asset_class_totals = {}
+    # Calculate totals by investment vehicle
+    investment_vehicle_totals = {}
 
     for account in accounts:
         account_data = serialize_doc(account)
@@ -583,18 +583,18 @@ def get_overview():
             book_value = inv.get('unit_balance', 0) * inv.get('avg_cost', 0)
             account_total += book_value
 
-            # Accumulate by asset class
-            asset_class = inv.get('asset_class', 'Unknown')
-            if asset_class not in asset_class_totals:
-                asset_class_totals[asset_class] = 0
-            asset_class_totals[asset_class] += book_value
+            # Accumulate by investment vehicle
+            investment_vehicle = inv.get('investment_vehicle', 'Unknown')
+            if investment_vehicle not in investment_vehicle_totals:
+                investment_vehicle_totals[investment_vehicle] = 0
+            investment_vehicle_totals[investment_vehicle] += book_value
 
         account_data['total_book_value'] = account_total
         accounts_data.append(account_data)
 
     return jsonify({
         'accounts': accounts_data,
-        'asset_allocation': asset_class_totals
+        'asset_allocation': investment_vehicle_totals
     })
 
 

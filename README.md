@@ -13,7 +13,7 @@ Accounts are containers for Investments, and have these properties:
 
 Accounts contain at least one Investment. Investments have these properties:
 - Symbol: a string up to 10 characters
-- Asset class: Stock, Mutual fund, ETF, Bond, GIC
+- Investment vehicle: Stock, Mutual fund, ETF, Bond, GIC
 - Unit balance: float
 - Average cost per unit: currency
 

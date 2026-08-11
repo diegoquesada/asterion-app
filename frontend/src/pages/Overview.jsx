@@ -4,7 +4,7 @@
  * Displays overall asset allocation combining all accounts.
  * Shows:
  * - A table of all accounts with their totals on the left
- * - A pie chart of asset allocation by asset class on the right
+ * - A pie chart of asset allocation by investment vehicle on the right
  */
 
 import { useState, useEffect } from 'react'
@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { formatNumber } from '../utils/formatters'
 
-// Color palette for asset classes
+// Color palette for investment vehicles
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16']
 
 function Overview() {

@@ -11,7 +11,7 @@ def test_add_investment(client, mock_db):
 
     payload = {
         "symbol": "AAPL",
-        "asset_class": "Stock",
+        "investment_vehicle": "Stock",
         "unit_balance": 10.0,
         "avg_cost": 150.0
     }
@@ -26,7 +26,7 @@ def test_add_investment_account_not_found(client, mock_db):
     """Test adding investment to non-existent account."""
     payload = {
         "symbol": "AAPL",
-        "asset_class": "Stock",
+        "investment_vehicle": "Stock",
         "unit_balance": 10.0,
         "avg_cost": 150.0
     }
@@ -69,7 +69,7 @@ def test_transfer_investment(client, mock_db):
 def test_update_investment_success_partial(client, mock_db):
     """Test updating only unit balance and avg cost."""
     inv_id = mock_db.investments.insert_one({
-        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Stock"
+        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "investment_vehicle": "Stock"
     }).inserted_id
 
     payload = {"unit_balance": 20.0, "avg_cost": 160.0}
@@ -83,12 +83,12 @@ def test_update_investment_success_partial(client, mock_db):
 def test_update_investment_success_full(client, mock_db):
     """Test updating all allowed fields."""
     inv_id = mock_db.investments.insert_one({
-        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Stock"
+        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "investment_vehicle": "Stock"
     }).inserted_id
 
     payload = {
         "symbol": "MSFT",
-        "asset_class": "ETF",
+        "investment_vehicle": "ETF",
         "unit_balance": 30.0,
         "avg_cost": 200.0
     }
@@ -96,14 +96,14 @@ def test_update_investment_success_full(client, mock_db):
     assert response.status_code == 200
     data = response.get_json()
     assert data['symbol'] == "MSFT"
-    assert data['asset_class'] == "ETF"
+    assert data['investment_vehicle'] == "ETF"
     assert data['unit_balance'] == 30.0
     assert data['avg_cost'] == 200.0
 
 def test_update_investment_ignore_invalid(client, mock_db):
     """Test that invalid fields are ignored."""
     inv_id = mock_db.investments.insert_one({
-        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Stock"
+        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "investment_vehicle": "Stock"
     }).inserted_id
 
     payload = {"unit_balance": 40.0, "account_id": "acc_NEW_ID", "random_field": "value"}
@@ -116,7 +116,7 @@ def test_update_investment_ignore_invalid(client, mock_db):
 def test_update_investment_no_valid_fields(client, mock_db):
     """Test request with no valid fields."""
     inv_id = mock_db.investments.insert_one({
-        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Stock"
+        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "investment_vehicle": "Stock"
     }).inserted_id
 
     payload = {"random_field": "value"}

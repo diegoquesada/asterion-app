@@ -2,7 +2,7 @@
  * Account View Page
  *
  * Displays all investments within a given account as a table.
- * Shows a pie chart of investments by asset class.
+ * Shows a pie chart of investments by investment vehicle.
  * Allows drilling down into individual investments.
  */
 
@@ -24,7 +24,7 @@ function AccountView() {
   // Form state for new investment
   const [newInvestment, setNewInvestment] = useState({
     symbol: '',
-    asset_class: 'Stock',
+    investment_vehicle: 'Stock',
     unit_balance: 0,
     avg_cost: 0
   })
@@ -67,7 +67,7 @@ function AccountView() {
         throw new Error('Failed to create investment')
       }
       setShowAddModal(false)
-      setNewInvestment({ symbol: '', asset_class: 'Stock', unit_balance: 0, avg_cost: 0 })
+      setNewInvestment({ symbol: '', investment_vehicle: 'Stock', unit_balance: 0, avg_cost: 0 })
       fetchData()
     } catch (err) {
       setError(err.message)
@@ -106,11 +106,11 @@ function AccountView() {
   }
 
   // Calculate chart data
-  // The API calls asset_class what is actually investment vehicles - will be fixed later.
+  // The API calls investment_vehicle what is actually investment vehicles - will be fixed later.
   const investmentVehicleTotals = {}
   investments.forEach(inv => {
     const value = inv.unit_balance * inv.avg_cost
-    investmentVehicleTotals[inv.asset_class] = (investmentVehicleTotals[inv.asset_class] || 0) + value
+    investmentVehicleTotals[inv.investment_vehicle] = (investmentVehicleTotals[inv.investment_vehicle] || 0) + value
   })
 
   const chartData = Object.entries(investmentVehicleTotals).map(([name, value]) => ({
@@ -183,7 +183,7 @@ function AccountView() {
                 <thead>
                   <tr>
                     <th>Symbol</th>
-                    <th>Asset Class</th>
+                    <th>Investment Vehicle</th>
                     <th>Units</th>
                     <th>Avg Cost</th>
                     <th>Book Value</th>
@@ -202,7 +202,7 @@ function AccountView() {
                           {inv.symbol}
                         </Link>
                       </td>
-                      <td>{inv.asset_class}</td>
+                      <td>{inv.investment_vehicle}</td>
                       <td>{inv.unit_balance?.toFixed(4) || '0.0000'}</td>
                       <td>${formatNumber(inv.avg_cost)}</td>
                       <td style={{ fontWeight: 600, color: '#10b981' }}>
@@ -295,11 +295,11 @@ function AccountView() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Asset Class</label>
+                <label className="form-label">Investment Vehicle</label>
                 <select
                   className="form-select"
-                  value={newInvestment.asset_class}
-                  onChange={(e) => setNewInvestment({ ...newInvestment, asset_class: e.target.value })}
+                  value={newInvestment.investment_vehicle}
+                  onChange={(e) => setNewInvestment({ ...newInvestment, investment_vehicle: e.target.value })}
                 >
                   <option value="Stock">Stock</option>
                   <option value="Mutual fund">Mutual fund</option>
