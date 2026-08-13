@@ -24,6 +24,7 @@ function AccountView() {
   // Form state for new investment
   const [newInvestment, setNewInvestment] = useState({
     symbol: '',
+    asset_class: 'Equity',
     investment_vehicle: 'Stock',
     unit_balance: 0,
     avg_cost: 0
@@ -67,7 +68,7 @@ function AccountView() {
         throw new Error('Failed to create investment')
       }
       setShowAddModal(false)
-      setNewInvestment({ symbol: '', investment_vehicle: 'Stock', unit_balance: 0, avg_cost: 0 })
+      setNewInvestment({ symbol: '', asset_class: 'Equity', investment_vehicle: 'Stock', unit_balance: 0, avg_cost: 0 })
       fetchData()
     } catch (err) {
       setError(err.message)
@@ -183,6 +184,7 @@ function AccountView() {
                 <thead>
                   <tr>
                     <th>Symbol</th>
+                    <th>Asset Class</th>
                     <th>Investment Vehicle</th>
                     <th>Units</th>
                     <th>Avg Cost</th>

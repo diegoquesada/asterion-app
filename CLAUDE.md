@@ -5,6 +5,12 @@ Use a venv to manage Python packages, do not install globally.
 ## About the project
 This project is a web app to track individual investments across multiple accounts. Backend is Python + Flask, unit tests in Pytest. Front end is React + Vite.js, unit tests in Mocha. Database is Mongodb running in a container. Mongodb is pegged at v4.4 to avoid AVX dependency. 
 
+### Data Model
+- **Account**: Basic account info (number, institution, type, tax status).
+- **Investment**: Tracks a specific holding within an account. Includes `symbol`, `asset_class` (e.g., Equity, Fixed Income), `investment_vehicle` (e.g., Stock, ETF), `unit_balance`, and `avg_cost`.
+- **Transaction**: Records purchases or sales for an investment.
+- **Snapshot**: Captures the state of an account at a specific date.
+
 ## Key directories
 - `backend` - the backend code
 - `frontend` - the frontend web app

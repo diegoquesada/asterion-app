@@ -11,6 +11,7 @@ def test_add_investment(client, mock_db):
 
     payload = {
         "symbol": "AAPL",
+        "asset_class": "Equities",
         "investment_vehicle": "Stock",
         "unit_balance": 10.0,
         "avg_cost": 150.0
@@ -20,12 +21,14 @@ def test_add_investment(client, mock_db):
     assert response.status_code == 201
     data = response.get_json()
     assert data['symbol'] == "AAPL"
+    assert data['asset_class'] == "Equities"
     assert data['account_id'] == acc_id_str
 
 def test_add_investment_account_not_found(client, mock_db):
     """Test adding investment to non-existent account."""
     payload = {
         "symbol": "AAPL",
+        "asset_class": "Equities",
         "investment_vehicle": "Stock",
         "unit_balance": 10.0,
         "avg_cost": 150.0
@@ -88,6 +91,7 @@ def test_update_investment_success_full(client, mock_db):
 
     payload = {
         "symbol": "MSFT",
+        "asset_class": "Fixed Income",
         "investment_vehicle": "ETF",
         "unit_balance": 30.0,
         "avg_cost": 200.0
@@ -96,6 +100,7 @@ def test_update_investment_success_full(client, mock_db):
     assert response.status_code == 200
     data = response.get_json()
     assert data['symbol'] == "MSFT"
+    assert data['asset_class'] == "Fixed Income"
     assert data['investment_vehicle'] == "ETF"
     assert data['unit_balance'] == 30.0
     assert data['avg_cost'] == 200.0

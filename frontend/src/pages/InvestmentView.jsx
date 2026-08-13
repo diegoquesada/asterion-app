@@ -30,6 +30,7 @@ function InvestmentView() {
   // Form state for editing investment
   const [editInvestment, setEditInvestment] = useState({
     symbol: '',
+    asset_class: 'Equity',
     investment_vehicle: 'Stock',
     unit_balance: 0,
     avg_cost: 0
@@ -116,7 +117,8 @@ function InvestmentView() {
   function openEditModal() {
     setEditInvestment({
       symbol: investment.symbol,
-      asset_vehicle: investment.investment_vehicle,
+      asset_class: investment.asset_class || 'Equity',
+      investment_vehicle: investment.investment_vehicle || 'Stock',
       unit_balance: investment.unit_balance,
       avg_cost: investment.avg_cost
     })
@@ -166,7 +168,10 @@ function InvestmentView() {
             Investment: {investment.symbol}
           </h1>
           <div className="account-badges">
-            <span className="badge" style={{ backgroundColor: '#e0e7ff', color: '#3730a3' }}>
+            <span className="badge" style={{ backgroundColor: '#e0e7ff', color: '#3730a3', marginRight: '0.5rem' }}>
+              {investment.asset_class}
+            </span>
+            <span className="badge" style={{ backgroundColor: '#f1f5f9', color: '#475569' }}>
               {investment.investment_vehicle}
             </span>
           </div>
@@ -373,6 +378,21 @@ function InvestmentView() {
                   maxLength={10}
                   required
                 />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Asset Class</label>
+                <select
+                  className="form-select"
+                  value={editInvestment.asset_class}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, asset_class: e.target.value })}
+                >
+                  <option value="Equity">Equity</option>
+                  <option value="Fixed Income">Fixed Income</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Real Estate">Real Estate</option>
+                  <option value="Alternatives">Alternatives</option>
+                </select>
               </div>
 
               <div className="form-group">
