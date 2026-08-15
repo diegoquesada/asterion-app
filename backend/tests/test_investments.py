@@ -11,7 +11,8 @@ def test_add_investment(client, mock_db):
 
     payload = {
         "symbol": "AAPL",
-        "asset_class": "Stock",
+        "asset_class": "Equity",
+        "investment_vehicle": "Stock",
         "unit_balance": 10.0,
         "avg_cost": 150.0
     }
@@ -20,18 +21,39 @@ def test_add_investment(client, mock_db):
     assert response.status_code == 201
     data = response.get_json()
     assert data['symbol'] == "AAPL"
+    assert data['asset_class'] == "Equity"
+    assert data['investment_vehicle'] == "Stock"
     assert data['account_id'] == acc_id_str
 
 def test_add_investment_account_not_found(client, mock_db):
     """Test adding investment to non-existent account."""
     payload = {
         "symbol": "AAPL",
-        "asset_class": "Stock",
+        "asset_class": "Equity",
+        "investment_vehicle": "Stock",
         "unit_balance": 10.0,
         "avg_cost": 150.0
     }
     response = client.post(f'/api/accounts/{str(ObjectId())}/investments', json=payload)
     assert response.status_code == 404
+
+def test_add_investment_missing_fields(client, mock_db):
+    """Test adding investment with missing required fields."""
+    account_id = mock_db.accounts.insert_one({
+        "number": "1", "holding_institution": "H", "type": "Bank", "tax_status": "Taxable", "active": True
+    }).inserted_id
+    acc_id_str = str(account_id)
+
+    # Missing investment_vehicle
+    payload = {
+        "symbol": "AAPL",
+        "asset_class": "Equity",
+        "unit_balance": 10.0,
+        "avg_cost": 150.0
+    }
+    response = client.post(f'/api/accounts/{acc_id_str}/investments', json=payload)
+    assert response.status_code == 400
+    assert 'investment_vehicle is required' in response.get_json()['error']
 
 def test_remove_investment(client, mock_db):
     """Test removing an investment."""
@@ -83,12 +105,13 @@ def test_update_investment_success_partial(client, mock_db):
 def test_update_investment_success_full(client, mock_db):
     """Test updating all allowed fields."""
     inv_id = mock_db.investments.insert_one({
-        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Stock"
+        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Equity", "investment_vehicle": "Stock"
     }).inserted_id
 
     payload = {
         "symbol": "MSFT",
-        "asset_class": "ETF",
+        "asset_class": "Fixed Income",
+        "investment_vehicle": "Bond",
         "unit_balance": 30.0,
         "avg_cost": 200.0
     }
@@ -96,9 +119,23 @@ def test_update_investment_success_full(client, mock_db):
     assert response.status_code == 200
     data = response.get_json()
     assert data['symbol'] == "MSFT"
-    assert data['asset_class'] == "ETF"
+    assert data['asset_class'] == "Fixed Income"
+    assert data['investment_vehicle'] == "Bond"
     assert data['unit_balance'] == 30.0
     assert data['avg_cost'] == 200.0
+
+def test_update_investment_vehicle(client, mock_db):
+    """Test updating only the investment vehicle."""
+    inv_id = mock_db.investments.insert_one({
+        "symbol": "AAPL", "account_id": "acc1", "unit_balance": 10.0, "avg_cost": 150.0, "asset_class": "Equity", "investment_vehicle": "Stock"
+    }).inserted_id
+
+    payload = {"investment_vehicle": "ETF"}
+    response = client.patch(f'/api/investments/{str(inv_id)}', json=payload)
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['investment_vehicle'] == "ETF"
+    assert data['asset_class'] == "Equity" # preserved
 
 def test_update_investment_ignore_invalid(client, mock_db):
     """Test that invalid fields are ignored."""

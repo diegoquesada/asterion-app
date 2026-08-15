@@ -307,6 +307,12 @@ def add_investment(account_id):
     if not account:
         return jsonify({'error': 'Account not found'}), 404
 
+    # Validate required fields
+    required = ['symbol', 'asset_class', 'investment_vehicle']
+    for field in required:
+        if field not in data:
+            return jsonify({'error': f'{field} is required'}), 400
+
     investment = {
         'account_id': account_id,
         'symbol': data['symbol'],
