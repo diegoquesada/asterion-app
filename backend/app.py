@@ -258,6 +258,7 @@ def produce_snapshot(account_id):
         snapshot_investments.append({
             'symbol': symbol,
             'asset_class': inv.get('asset_class'),
+            'investment_vehicle': inv.get('investment_vehicle'),
             'units': units,
             'unit_value': unit_value,
             'total_value': total_value
@@ -290,7 +291,8 @@ def add_investment(account_id):
 
     Request body:
         - symbol: string (up to 10 chars)
-        - asset_class: "Stock", "Mutual fund", "ETF", "Bond", or "GIC"
+        - asset_class: "Equity", "Fixed Income", "Alternative", "Mixed", or "Cash"
+        - investment_vehicle: "Stock", "Mutual fund", "ETF", "Bond", or "GIC"
         - unit_balance: float (default 0)
         - avg_cost: float (default 0)
 
@@ -305,10 +307,17 @@ def add_investment(account_id):
     if not account:
         return jsonify({'error': 'Account not found'}), 404
 
+    # Validate required fields
+    required = ['symbol', 'asset_class', 'investment_vehicle']
+    for field in required:
+        if field not in data:
+            return jsonify({'error': f'{field} is required'}), 400
+
     investment = {
         'account_id': account_id,
         'symbol': data['symbol'],
         'asset_class': data['asset_class'],
+        'investment_vehicle': data['investment_vehicle'],
         'unit_balance': data.get('unit_balance', 0),
         'avg_cost': data.get('avg_cost', 0),
         'created_at': datetime.utcnow()
@@ -391,7 +400,8 @@ def update_investment(investment_id):
 
     Request body (any combination of):
         - symbol: string
-        - asset_class: string ("Stock", "Mutual fund", "ETF", "Bond", or "GIC")
+        - asset_class: string ("Equity", "Fixed Income", "Alternative", "Mixed", or "Cash")
+        - investment_vehicle: string ("Stock", "Mutual fund", "ETF", "Bond", or "GIC")
         - unit_balance: float
         - avg_cost: float
 
@@ -403,7 +413,7 @@ def update_investment(investment_id):
 
     # Build update fields
     update_fields = {}
-    allowed_fields = ['symbol', 'asset_class', 'unit_balance', 'avg_cost']
+    allowed_fields = ['symbol', 'asset_class', 'investment_vehicle', 'unit_balance', 'avg_cost']
 
     for field in allowed_fields:
         if field in data:

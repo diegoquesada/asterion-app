@@ -117,6 +117,7 @@ function InvestmentView() {
     setEditInvestment({
       symbol: investment.symbol,
       asset_class: investment.asset_class,
+      investment_vehicle: investment.investment_vehicle,
       unit_balance: investment.unit_balance,
       avg_cost: investment.avg_cost
     })
@@ -168,6 +169,9 @@ function InvestmentView() {
           <div className="account-badges">
             <span className="badge" style={{ backgroundColor: '#e0e7ff', color: '#3730a3' }}>
               {investment.asset_class}
+            </span>
+            <span className="badge" style={{ backgroundColor: '#fef3c7', color: '#78350f' }}>
+              {investment.investment_vehicle}
             </span>
           </div>
         </div>
@@ -381,6 +385,21 @@ function InvestmentView() {
                   className="form-select"
                   value={editInvestment.asset_class}
                   onChange={(e) => setEditInvestment({ ...editInvestment, asset_class: e.target.value })}
+                >
+                  <option value="Equity">Equity</option>
+                  <option value="Fixed Income">Fixed Income</option>
+                  <option value="Alternative">Alternative</option>
+                  <option value="Mixed">Mixed</option>
+                  <option value="Cash">Cash</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Investment Vehicle</label>
+                <select
+                  className="form-select"
+                  value={editInvestment.investment_vehicle}
+                  onChange={(e) => setEditInvestment({ ...editInvestment, investment_vehicle: e.target.value })}
                 >
                   <option value="Stock">Stock</option>
                   <option value="Mutual fund">Mutual fund</option>

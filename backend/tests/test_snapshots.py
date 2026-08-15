@@ -8,10 +8,10 @@ def test_produce_snapshot(client, mock_db):
     acc_id_str = str(acc_id)
 
     mock_db.investments.insert_one({
-        "symbol": "AAPL", "unit_balance": 10.0, "avg_cost": 100.0, "account_id": acc_id_str
+        "symbol": "AAPL", "unit_balance": 10.0, "avg_cost": 100.0, "account_id": acc_id_str, "asset_class": "Equity", "investment_vehicle": "Stock"
     })
     mock_db.investments.insert_one({
-        "symbol": "MSFT", "unit_balance": 5.0, "avg_cost": 200.0, "account_id": acc_id_str
+        "symbol": "MSFT", "unit_balance": 5.0, "avg_cost": 200.0, "account_id": acc_id_str, "asset_class": "Equity", "investment_vehicle": "Stock"
     })
 
     payload = {
@@ -33,6 +33,8 @@ def test_produce_snapshot(client, mock_db):
     # Check a specific investment in snapshot
     aapl = next(i for i in data['investments'] if i['symbol'] == "AAPL")
     assert aapl['total_value'] == 1100.0
+    assert aapl['asset_class'] == "Equity"
+    assert aapl['investment_vehicle'] == "Stock"
 
 def test_list_snapshots(client, mock_db):
     """Test listing snapshots for an account."""
