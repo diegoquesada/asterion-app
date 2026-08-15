@@ -67,7 +67,7 @@ function AccountView() {
         throw new Error('Failed to create investment')
       }
       setShowAddModal(false)
-      setNewInvestment({ symbol: '', asset_class: 'Stock', unit_balance: 0, avg_cost: 0 })
+      setNewInvestment({ symbol: '', asset_class: 'Equity', investment_vehicle: 'Stock', unit_balance: 0, avg_cost: 0 })
       fetchData()
     } catch (err) {
       setError(err.message)
@@ -106,14 +106,13 @@ function AccountView() {
   }
 
   // Calculate chart data
-  // The API calls asset_class what is actually investment vehicles - will be fixed later.
-  const investmentVehicleTotals = {}
+  const assetClassTotals = {}
   investments.forEach(inv => {
     const value = inv.unit_balance * inv.avg_cost
-    investmentVehicleTotals[inv.asset_class] = (investmentVehicleTotals[inv.asset_class] || 0) + value
+    assetClassTotals[inv.asset_class] = (assetClassTotals[inv.asset_class] || 0) + value
   })
 
-  const chartData = Object.entries(investmentVehicleTotals).map(([name, value]) => ({
+  const chartData = Object.entries(assetClassTotals).map(([name, value]) => ({
     name,
     value: parseFloat(value.toFixed(2))
   }))
@@ -184,6 +183,7 @@ function AccountView() {
                   <tr>
                     <th>Symbol</th>
                     <th>Asset Class</th>
+                    <th>Investment Vehicle</th>
                     <th>Units</th>
                     <th>Avg Cost</th>
                     <th>Book Value</th>
@@ -203,6 +203,7 @@ function AccountView() {
                         </Link>
                       </td>
                       <td>{inv.asset_class}</td>
+                      <td>{inv.investment_vehicle || 'N/A'}</td>
                       <td>{inv.unit_balance?.toFixed(4) || '0.0000'}</td>
                       <td>${formatNumber(inv.avg_cost)}</td>
                       <td style={{ fontWeight: 600, color: '#10b981' }}>
@@ -223,7 +224,7 @@ function AccountView() {
                 </tbody>
                 <tfoot>
                   <tr style={{ backgroundColor: '#f8fafc', fontWeight: 600 }}>
-                    <td colSpan={4}>Total</td>
+                    <td colSpan={5}>Total</td>
                     <td style={{ color: '#10b981' }}>${formatNumber(totalValue)}</td>
                     <td></td>
                     <td></td>
@@ -234,10 +235,10 @@ function AccountView() {
           )}
         </div>
 
-        {/* Investment vehicles chart */}
+        {/* Asset allocation chart */}
         <div className="card layout-allocation-chart">
           <div className="card-header">
-            <h2 className="card-title">Investment Vehicles</h2>
+            <h2 className="card-title">Asset Allocation</h2>
           </div>
 
           {chartData.length === 0 ? (
@@ -300,6 +301,21 @@ function AccountView() {
                   className="form-select"
                   value={newInvestment.asset_class}
                   onChange={(e) => setNewInvestment({ ...newInvestment, asset_class: e.target.value })}
+                >
+                  <option value="Equity">Equity</option>
+                  <option value="Fixed Income">Fixed Income</option>
+                  <option value="Alternative">Alternative</option>
+                  <option value="Mixed">Mixed</option>
+                  <option value="Cash">Cash</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Investment Vehicle</label>
+                <select
+                  className="form-select"
+                  value={newInvestment.investment_vehicle}
+                  onChange={(e) => setNewInvestment({ ...newInvestment, investment_vehicle: e.target.value })}
                 >
                   <option value="Stock">Stock</option>
                   <option value="Mutual fund">Mutual fund</option>
